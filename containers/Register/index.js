@@ -6,33 +6,42 @@ import {
     Button,
     View,
     StyleSheet,
+    ActivityIndicator,
     AsyncStorage
 } from 'react-native';
+import { config } from '../../constants/string';
+import Api from '../../helper/api';
 
 export default class Register extends Component{
     constructor(props){
         super(props);
         this.state = {
-            txtName: null,
-            txtEmail: null,
+            txtUsername: null,
             txtPassword: null,
             txtRetypePassword: null,
+            txtGender: null,
+            txtBirthdate: null,
+            isLoading: false
         }
     }
 
     validate(){
         const {
-            txtName,
-            txtEmail,
+            txtUsername,
             txtPassword,
-            txtRetypePassword
+            txtRetypePassword,
+            txtGender,
+            txtBirthdate
         } = this.state;
 
-        if(txtName == null){
-            alert("Nama tidak boleh kosong");
+        if(txtUsername == null){
+            alert("Username tidak boleh kosong");
         }
-        else if(txtEmail == null){
-            alert("Email tidak boleh kosong");
+        else if(txtGender == null){
+            alert("Gender tidak boleh kosong");
+        }
+        else if(txtBirthdate == null){
+            alert("Birthdate tidak boleh kosong");
         }
         else if(txtPassword == null){
             alert("Password tidak boleh kosong");
@@ -46,14 +55,27 @@ export default class Register extends Component{
 
     async signUp(){
         try{
-            const login = {
-                email: this.state.txtEmail,
-                name: this.state.txtName,
-                password: this.state.txtPassword
+            this.setState({ isLoading: true });
+            const url = `${config.host}${config.register}`;
+            const body = {
+                username: this.state.txtUsername,
+                password: this.state.txtPassword,
+                gender: this.state.txtGender,
+                birthdate: this.state.txtBirthdate
             }
-            await AsyncStorage.setItem('login', JSON.stringify(login));
-            alert("Success !!");
-            this.props.navigation.goBack();
+            Api.post(url, body).then(resp => {
+                if(resp.success){
+                    this.setState({ isLoading: false });
+                    alert("Success !!");
+                    this.props.navigation.goBack();
+                }else{
+                    this.setState({ isLoading: false });
+                    alert(resp.message);
+                }
+            }).catch(error => {
+                this.setState({ isLoading: false });
+                alert(error)
+            });
         }
         catch(error){
             alert(error);
@@ -62,20 +84,29 @@ export default class Register extends Component{
 
     render(){
         return(
-            <View style={styles.container}>
-                <TextInput placeholder="Name" onChangeText={(txtName) => this.setState({txtName})} />
-                <TextInput placeholder="Email" keyboardType="email-address" onChangeText={(txtEmail) => this.setState({txtEmail})} />
-                <TextInput placeholder="Password" secureTextEntry={true} onChangeText={(txtPassword) => this.setState({txtPassword})} />
-                <TextInput placeholder="Retype Password" secureTextEntry={true} onChangeText={(txtRetypePassword) => this.setState({txtRetypePassword})} />
-                <Button title="Sign Up" onPress={() => this.validate()} />
-                <TouchableOpacity
-                    style={styles.login}
-                    onPress={() => this.props.navigation.goBack()}
-                >
-                    <Text>Already have an account ? Login</Text>
-                </TouchableOpacity>
-            </View>
-        );
+            this.state.isLoading ? (
+                <View style={styles.container}>
+                    <ActivityIndicator
+                        size="large"/>
+                </View>
+            ) : 
+            (
+                <View style={styles.container}>
+                    <TextInput placeholder="Username" onChangeText={(txtUsername) => this.setState({txtUsername})} />
+                    <TextInput placeholder="Password" secureTextEntry={true} onChangeText={(txtPassword) => this.setState({txtPassword})} />
+                    <TextInput placeholder="Retype Password" secureTextEntry={true} onChangeText={(txtRetypePassword) => this.setState({txtRetypePassword})} />
+                    <TextInput placeholder="Gender" onChangeText={(txtGender) => this.setState({txtGender})} />
+                    <TextInput placeholder="Birthdate" onChangeText={(txtBirthdate) => this.setState({txtBirthdate})} />
+                    <Button title="Sign Up" onPress={() => this.validate()} />
+                    <TouchableOpacity
+                        style={styles.login}
+                        onPress={() => this.props.navigation.goBack()}
+                    >
+                        <Text>Already have an account ? Login</Text>
+                    </TouchableOpacity>
+                </View>
+            )
+        )
     }
 }
 

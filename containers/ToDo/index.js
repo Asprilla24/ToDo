@@ -78,6 +78,7 @@ export default class ToDo extends Component{
         const {data,text} = this.state;
         return(
             <View style={styles.container}>
+                <Text>Welcome { this.props.navigation.state.params.username }</Text>
                 <TextInput
                     onChangeText={(text) => this.setState({ text })}
                     onSubmitEditing={() => this.addNewTask()}
