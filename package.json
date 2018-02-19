@@ -7,8 +7,12 @@
     "test": "jest"
   },
   "dependencies": {
+    "moment": "^2.20.1",
+    "native-base": "^2.3.9",
     "react": "16.2.0",
     "react-native": "0.53.0",
+    "react-native-datepicker": "^1.6.0",
+    "react-native-material-dropdown": "^0.7.2",
     "react-navigation": "^1.0.3"
   },
   "devDependencies": {

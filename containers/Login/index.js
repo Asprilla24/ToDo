@@ -1,14 +1,24 @@
 import React, {Component} from 'react';
 import {
-    Text,
-    TextInput,
-    Button,
-    View,
     StyleSheet,
     TouchableOpacity,
     ActivityIndicator,
     AsyncStorage
 } from 'react-native';
+import {
+    Text,
+    Input,
+    Container,
+    Header,
+    View,
+    Button,
+    Form,
+    Content,
+    Item,
+    Footer,
+    Label,
+    Body
+} from 'native-base';
 import {
     NavigationActions
 } from 'react-navigation';
@@ -34,12 +44,13 @@ export default class Login extends Component {
         };
 
         Api.post(url, body).then(resp => {
-            if(resp.success){
-                this.saveData(resp.data);
-            }else{
-                this.setState({ isLoading: false });
-                alert(resp.message);
-            }
+            alert(JSON.parse(resp.data));
+            // if(resp.success){
+            //     this.saveData(resp.data);
+            // }else{
+            //     this.setState({ isLoading: false });
+            //     alert(resp.message);
+            // }
         }).catch(error => {
             this.setState({ isLoading: false });
             alert(error)
@@ -87,20 +98,50 @@ export default class Login extends Component {
                 </View>
             ) : 
             (
-                <View style={styles.container}>
-                    <TextInput placeholder="Username" onChangeText={(txtUsername) => this.setState({txtUsername})}/>
-                    <TextInput placeholder="Password" secureTextEntry={true} onChangeText={(txtPassword) => this.setState({txtPassword})}/>
-                    <Button
-                        onPress={() => this.onLogin()}
-                        title="LOGIN"
-                    />
-                    <TouchableOpacity
-                        onPress={() => this.props.navigation.navigate('Register')}
-                        style={styles.signup}
-                    >
-                        <Text>Dont have an account ? Sign Up</Text>
-                    </TouchableOpacity>
-                </View>
+                // <View style={styles.container}>
+                //     <TextInput
+                //         placeholder="Username"
+                //         onChangeText={(txtUsername) => this.setState({txtUsername})}/>
+                //     <TextInput
+                //         placeholder="Password"
+                //         secureTextEntry={true}
+                //         onChangeText={(txtPassword) => this.setState({txtPassword})}/>
+                //     <Button
+                //         onPress={() => this.onLogin()}
+                //         title="LOGIN"
+                //     />
+                //     <TouchableOpacity
+                //         onPress={() => this.props.navigation.navigate('Register')}
+                //         style={styles.signup}
+                //     >
+                //         <Text>Dont have an account ? Sign Up</Text>
+                //     </TouchableOpacity>
+                // </View>
+                <Container>
+                    <Content padder contentContainerStyle={styles.container}>
+                        <Form>
+                            <Item floatingLabel>
+                                <Label>Username</Label>
+                                <Input onChangeText={(txtUsername)=>this.setState({txtUsername})} />
+                            </Item>
+                            <Item floatingLabel last>
+                                <Label>Password</Label>
+                                <Input secureTextEntry onChangeText={(txtPassword)=>this.setState({txtPassword})} />
+                            </Item>
+                        </Form>
+                        <Button block style={{ marginTop:20 }}>
+                            <Text>Login</Text>
+                        </Button>
+                    </Content>
+                    <Footer style={{ backgroundColor:'#fff' }}>
+                        <TouchableOpacity
+                            onPress={() => this.props.navigation.navigate('Register')}
+                            style={styles.signup}
+                        >
+                            <Text>Dont have an account ? Sign Up</Text>
+                        </TouchableOpacity>
+                    </Footer>
+                </Container>
             )
         );
     }
@@ -109,9 +150,7 @@ export default class Login extends Component {
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'center',
-        padding: 30
+        justifyContent: 'center'
     },
     signup: {
         justifyContent:'center',

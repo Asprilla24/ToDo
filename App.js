@@ -7,7 +7,12 @@ import containers from './containers'
 
 const AppNavigator = StackNavigator({
   Login: {screen: containers.Login},
-  Home: {screen: containers.ToDo},
+  Home: {
+    screen: containers.ToDo,
+    navigationOptions: {
+      header: null,
+    }
+  },
   Register: {screen: containers.Register}
 });
 
